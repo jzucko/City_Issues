@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block head %}
+<h1>City Issues</h1>
+{% endblock %}
+
+
+
+{% block body %}
+
+    {% for issue in issues%}
+        <div style="border:1px solid #ccc; padding: 10px; margin: 10px;">
+            <h3>{{ issue.title}}</h3>
+            <p>{{ issue.description}}</p>
+            <p> <b>Status:</b> {{ issue.status}}</p>
+        </div>
+    {% else %}
+        <p>No issues reported.</p>
+    {%endfor%}
+
+{% endblock %}

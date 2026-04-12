@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block head %}
+
+<h2>Report an Issue</h2>
+
+<form method="POST">
+
+    <p>
+        <label>Title:</label><br>
+        <input type='text' name="title" placeholder="Title" value={{request.form.title}} required>
+    </p>
+    <p>
+        <label>Description:</label><br>
+        <textarea name="description" placeholder="Description" required>{{request.form.description}}</textarea>
+    </p>
+    <button type="submit">Submit</button>
+</form>
+
+<br>
+
+<a href="/">Back to all issues</a>
+
+{% endblock %}
