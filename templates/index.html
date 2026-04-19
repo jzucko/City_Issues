@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block head %}
-<h1>City Issues</h1>
+<h1>City Issues App</h1>
 {% endblock %}
 
 
@@ -13,6 +13,7 @@
             <h3>{{ issue.title}}</h3>
             <p>{{ issue.description}}</p>
             <p> <b>Status:</b> {{ issue.status}}</p>
+            <p> <b>Created at:</b> {{ issue.created_at}}</p>
         </div>
     {% else %}
         <p>No issues reported.</p>

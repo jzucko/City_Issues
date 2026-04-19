@@ -1,13 +1,15 @@
 print("ROUTES FILE LOADED")
 
-from app import app
-from models import db
 from flask import render_template, request, redirect
-from models import Issue
+from app import app, db, Issue
+#from models import db
 
-#HOME
+#from models import Issue
+
+#INDEX
 @app.route('/')
 def index():
+      print("INDEX ROUTE HIT")  # debug
       issues = Issue.query.all()
       return render_template('index.html', issues=issues)
 
@@ -15,6 +17,7 @@ def index():
 #CREATE
 @app.route('/create', methods= ['GET', 'POST'])
 def create():
+     print("CREATE ROUTE HIT")  # debug
      if request.method == 'POST':
           title = request.form['title']
           description = request.form['description'] #issue.user_id = current_user.id
