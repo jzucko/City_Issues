@@ -16,19 +16,28 @@ db.init_app(app)
 #INDEX    
 @app.route("/")
 def index():
+    if 'user_id' not in session:
+         return redirect('/login')
     
-    issues = Issue.query.all()
+    issues = Issue.query.filter_by(user_id = session['user_id']).all()
     return render_template("index.html", issues=issues)
 
 
 #CREATE
 @app.route("/create", methods=["GET", "POST"])
 def create():
+    if 'user_id' not in session:
+         return redirect('/login')
+    
     if request.method == "POST":
         title = request.form["title"]
         description = request.form["description"]
 
-        issue = Issue(title=title, description=description)
+        issue = Issue(
+             title=title, 
+             description=description,
+             user_id=session['user_id']
+             )
 
         db.session.add(issue)
         db.session.commit()
@@ -45,6 +54,11 @@ def register():
         username = request.form["username"]
         password = request.form["password"]
 
+        #check if user exists
+        existing_user = User.query.filter_by(username=username).first()
+        if existing_user:
+             return 'Username already exists.'
+
         hashed_password = generate_password_hash(password)
 
         user = User(username=username, password=hashed_password)
@@ -59,18 +73,21 @@ def register():
 
 
 #LOGIN
-@app.route("/login", )
+@app.route("/login", methods=['GET', 'POST'] )
 def login():
-    """if request.method == "DELETE":
-        title = request.form["title"]
-        description = request.form["description"]
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
 
-        issue = Issue(title=title, description=description)
+        user = User.query.filter_by(username=username).first()
 
-        db.session.add(issue)
-        db.session.commit()
+        if user and check_password_hash(user.password, password):
+             session['user_id'] = user.id
+             session['username'] = username
 
-        return redirect("/login")"""
+             return redirect("/")
+    
+        return 'Invalid credentials.'
 
     return render_template("login.html")
 

@@ -2,6 +2,7 @@
 
 {% block head %}
 <h1>City Issues App</h1>
+<h2>Hi {{session ['username']}}!</h2>
 {% endblock %}
 
 
@@ -18,5 +19,22 @@
     {% else %}
         <p>No issues reported.</p>
     {%endfor%}
+
+    {% if issues %}
+        <ul>
+            {% for issue in issues %}
+                <li>
+                    <strong>{{ issue.title}}</strong><br>
+                    {{ issue.description }}<br>
+                    Status: {{ issue.status}}<br>
+                    Created: {{ issue.created_at}}
+                </li>
+            {% endfor %}
+        </ul>
+
+    {% else %}
+        <p>You don't have any reported issues.</p>
+    {% endif %}
+
 
 {% endblock %}

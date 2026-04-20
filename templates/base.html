@@ -13,9 +13,24 @@
         <a href="/">Home</a>
         <a href="{{url_for('login')}}">Log in</a>
         <a href="{{url_for('register')}}">Register</a>
+        <a href="{{url_for('create')}}">Report Issue</a>
     </nav>
     <hr>
 
-    {% block body %} {% endblock %}
+    {% block body %} 
+        {% if session.get ('user_id') %}
+            <p>
+                Logged in as {{ session['username'] }} |
+                <a href="{{url_for('logout')}}">Logout</a>
+                <a href="{{url_for('create')}}">Report Issue</a>
+            </p>
+        {% else %}
+            <a href="{{url_for('login')}}">Log in</a>
+            <a href="{{url_for('register')}}">Register</a>
+        {% endif %}
+    
+    
+    
+    {% endblock %}
 </body>
 </html>
