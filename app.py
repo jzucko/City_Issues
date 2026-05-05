@@ -12,6 +12,20 @@ app.config['SECRET_KEY'] = 'secret'
 
 db.init_app(app)
 
+'''
+@app.route('/make-admin')
+def make_admin():
+     user=User.query.filter_by(username='testuser1').first()
+
+     if user:
+          user.is_admin=True
+          db.session.commit()
+          return 'User is now admin'
+     
+     return 'User not found' '''
+
+
+
 
 #INDEX    
 @app.route("/")
@@ -70,7 +84,19 @@ def register():
 
     return render_template("register.html")
 
+#ADMIN
+@app.route('/admin')
+def admin():
+     if 'user_id' not in session:
+          return redirect('/login')
+     
+     user = User.query.get(session['user_id'])
 
+     if not user.is_admin:
+          return 'Access denied'
+     issues = Issue.query_all()
+
+     return render_template('admin.html', issues=issues)
 
 #LOGIN
 @app.route("/login", methods=['GET', 'POST'] )
@@ -91,10 +117,15 @@ def login():
 
     return render_template("login.html")
 
-
+#LOGOUT
+@app.route('/logout')
+def logout():
+     session.clear()
+     return redirect('/')
 
 with app.app_context():
         db.create_all()
+
         users = User.query.all()
         print('USERS:', users)
         for u in users:

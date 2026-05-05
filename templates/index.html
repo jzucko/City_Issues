@@ -9,32 +9,29 @@
 
 {% block body %}
 
+    {% if session.get ('user_id') %}
+            <p>
+                Logged in as {{ session['username'] }} |
+                <a href="{{url_for('logout')}}">Logout</a>
+                <a href="{{url_for('create')}}">Report Issue</a>
+            </p>
+        {% else %}
+            <a href="{{url_for('login')}}">Log in</a>
+            <a href="{{url_for('register')}}">Register</a>
+    {% endif %}
+
     {% for issue in issues%}
         <div style="border:1px solid #ccc; padding: 10px; margin: 10px;">
             <h3>{{ issue.title}}</h3>
             <p>{{ issue.description}}</p>
             <p> <b>Status:</b> {{ issue.status}}</p>
-            <p> <b>Created at:</b> {{ issue.created_at}}</p>
+            <p> <b>Created at:</b> {{ issue.created_at.strftime("%Y-%m-%d %H:%M")}}</p>
         </div>
     {% else %}
         <p>No issues reported.</p>
     {%endfor%}
 
-    {% if issues %}
-        <ul>
-            {% for issue in issues %}
-                <li>
-                    <strong>{{ issue.title}}</strong><br>
-                    {{ issue.description }}<br>
-                    Status: {{ issue.status}}<br>
-                    Created: {{ issue.created_at}}
-                </li>
-            {% endfor %}
-        </ul>
-
-    {% else %}
-        <p>You don't have any reported issues.</p>
-    {% endif %}
+    
 
 
 {% endblock %}

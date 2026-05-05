@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block head %}
+<h1>City Issues App</h1>
+<h2>Admin dashboard</h2>
+{% endblock %}
+
+
+
+{% block body %}
+
+    {% if issues  %}
+        <ul>
+            {% for issue in issues %}
+                <li>
+                    <strong> {{ issue.title }}</strong><br>
+                    {{ issue.description }} <br>
+                    Status: {{ issue.status }} <br>
+                    User ID: {{ issue.user_id }} <br>
+
+                    <a href="/solve/{{ issue.id }}"> Mark as solved</a>
+                    <a href="/delete/{{ issue.id }}"> Delete </a>
+
+                </li>
+             
+            {% endfor %}
+        </ul>
+
+    {% else  %}
+        <p>No issues in the system.</p>
+    {% endif  %}
+
+{% endblock %}
