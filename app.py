@@ -4,28 +4,22 @@ from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import session
 
-
-
 app= Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///issues.db"
 app.config['SECRET_KEY'] = 'secret'
 
 db.init_app(app)
 
-'''
-@app.route('/make-admin')
+'''@app.route('/make-admin')
 def make_admin():
      user=User.query.filter_by(username='testuser1').first()
 
      if user:
           user.is_admin=True
           db.session.commit()
-          return 'User is now admin'
-     
-     return 'User not found' '''
-
-
-
+          return f'User: {user.username} is now admin'
+          
+     return 'User not found' ''' 
 
 #INDEX    
 @app.route("/")
@@ -35,7 +29,6 @@ def index():
     
     issues = Issue.query.filter_by(user_id = session['user_id']).all()
     return render_template("index.html", issues=issues)
-
 
 #CREATE
 @app.route("/create", methods=["GET", "POST"])
@@ -59,7 +52,6 @@ def create():
         return redirect("/")
 
     return render_template("create.html")
-
 
 #REGISTER
 @app.route("/register", methods=['GET', 'POST'])
@@ -92,11 +84,14 @@ def admin():
      
      user = User.query.get(session['user_id'])
 
+     print('DEBUG:', user.username, user.is_admin)
+
      if not user.is_admin:
           return 'Access denied'
-     issues = Issue.query_all()
+     
+     issues = Issue.query.all()
 
-     return render_template('admin.html', issues=issues)
+     return render_template('admin.html', issues=issues, user=user)
 
 #LOGIN
 @app.route("/login", methods=['GET', 'POST'] )
@@ -108,10 +103,13 @@ def login():
         user = User.query.filter_by(username=username).first()
 
         if user and check_password_hash(user.password, password):
-             session['user_id'] = user.id
-             session['username'] = username
+             session['user_id'] = user.id #
+             session['username'] = username #
 
-             return redirect("/")
+             if user.is_admin:
+               return redirect('/admin')
+             else:
+               return redirect("/")
     
         return 'Invalid credentials.'
 
@@ -122,6 +120,39 @@ def login():
 def logout():
      session.clear()
      return redirect('/')
+
+#SOLVE
+@app.route('/solve/<int:id>', methods=['POST'])
+def solve(id):
+    if 'user_id' not in session:
+        return redirect('/login')
+    
+    user=User.query.get(session['user_id'])
+    if not user.is_admin:
+        return 'Access denied'
+    
+    issue= Issue.query.get_or_404(id)
+    issue.status = 'Solved'
+
+    db.session.commit()
+
+    return redirect('/admin')
+
+#ADMIN/USERS
+@app.route('/admin/users')
+def admin_users():
+    if 'user_id' not in session:
+        return redirect('/login')
+    
+    user=User.query.get(session['user_id'])
+    if not user.is_admin:
+        return 'Access denied'
+    
+    users = User.query.all()
+
+    return render_template ("admin_users.html", users=users)
+
+
 
 with app.app_context():
         db.create_all()

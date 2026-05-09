@@ -11,6 +11,7 @@ class Issue(db.Model):
     status = db.Column(db.String(20), default='Open')
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    user = db.relationship('User', backref='issues')
     #updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
 
 class User(db.Model, UserMixin):

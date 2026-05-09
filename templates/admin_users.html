@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block head %}
+<h1>City Issues App</h1>
+<h2>Admin dashboard</h2>
+{% endblock %}
+
+
+
+{% block body %}
+
+<h2>All users</h2>
+
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Username</th>
+        <th>Admin</th>
+    </tr>
+
+    {% for user in users%}
+    <tr>
+        <td>{{ user.id }}</td>
+        <td>{{ user.username }}</td>
+        <td>{{ user.is_admin }}</td>
+    </tr>
+    {% endfor %}
+
+</table>
+
+<a href="{{ url_for ('admin') }}">Admin dashboard</a>
+
+{% endblock %}

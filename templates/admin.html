@@ -9,6 +9,7 @@
 
 {% block body %}
 
+    <a href="{{ url_for ('admin_users') }}">View users</a>
     {% if issues  %}
         <ul>
             {% for issue in issues %}
@@ -16,15 +17,21 @@
                     <strong> {{ issue.title }}</strong><br>
                     {{ issue.description }} <br>
                     Status: {{ issue.status }} <br>
-                    User ID: {{ issue.user_id }} <br>
+                    Reported by: {{ issue.user.username }} <br>
 
-                    <a href="/solve/{{ issue.id }}"> Mark as solved</a>
-                    <a href="/delete/{{ issue.id }}"> Delete </a>
+                    {% if user.is_admin and issue.status != 'Solved' %}
+                        <form action="{{ url_for('solve', id=issue.id)}}" method="POST">
+                            <button type="Submit"> Mark as solved</button>
+                        </form>
+                    {% endif %}
+
+                    
 
                 </li>
              
             {% endfor %}
         </ul>
+      
 
     {% else  %}
         <p>No issues in the system.</p>
